@@ -1,65 +1,279 @@
-<!DOCTYPE HTML>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Diogo Gonçalves</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Diogo Gonçalves</title>
+<meta name="description" content="DevOps engineer in Utrecht. Infrastructure on GCP, reproducible systems with Nix, automation with Terraform and Ansible.">
+<link rel="icon" href="assets/favicon/favicon.ico">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky identity column on the left, a ledger of dated entries on the right. */
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --ink: #12151c;
+  --muted: #5b6372;
+  --line: #dde0e6;
+  --accent: #2241d9;
+  --accent-ink: #ffffff;
+  --ok: #0b8f67;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1016; --surface: #151922; --ink: #eceef3; --muted: #99a1b1;
+    --line: #262c39; --accent: #8ea2ff; --accent-ink: #0d1016; --ok: #3ad6a0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1016; --surface: #151922; --ink: #eceef3; --muted: #99a1b1;
+  --line: #262c39; --accent: #8ea2ff; --accent-ink: #0d1016; --ok: #3ad6a0;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.6 var(--font-body);
+  padding-block: 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 72px;
+  align-items: start;
+}
+
+/* Identity column */
+.id { position: sticky; top: 48px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.portrait {
+  width: 100%; max-width: 300px; aspect-ratio: 4 / 5; object-fit: cover; display: block;
+  border-radius: 6px; background: var(--line);
+}
+h1 {
+  font: 700 clamp(2.1rem, 4vw, 2.7rem)/1.05 var(--font-display);
+  letter-spacing: -0.02em; margin: 0; text-wrap: balance;
+}
+.role { margin: 8px 0 0; color: var(--muted); }
+.status {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+  font: 400 0.8rem/1.3 var(--font-mono); color: var(--muted);
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 14px 7px 12px;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 25%, transparent); flex: none; }
+.links { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; font: 400 0.88rem/1.4 var(--font-mono); }
+.links li { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.links a { text-decoration: none; padding: 5px 0; overflow-wrap: anywhere; border-bottom: 1px solid transparent; }
+.links a:hover { border-color: var(--accent); color: var(--accent); }
+.copy {
+  font: 500 0.7rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; cursor: pointer;
+}
+.copy:hover { color: var(--accent); border-color: var(--accent); }
+.cv {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; align-self: flex-start;
+  background: var(--accent); color: var(--accent-ink); text-decoration: none;
+  font: 500 0.95rem/1 var(--font-body); padding: 14px 20px; border-radius: 6px;
+  transition: transform .15s ease;
+}
+.cv:hover { transform: translateY(-1px); }
+.cv span { font-family: var(--font-mono); font-size: 0.78rem; opacity: .75; }
+
+/* Content */
+main { display: flex; flex-direction: column; gap: 64px; min-width: 0; }
+.lede {
+  font: 500 clamp(1.35rem, 2.6vw, 1.75rem)/1.35 var(--font-display);
+  letter-spacing: -0.01em; margin: 0; max-width: 34em; text-wrap: pretty;
+}
+.lede em { font-style: normal; color: var(--accent); }
+h2 {
+  font: 500 0.78rem/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  margin: 0 0 8px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+}
+.entry {
+  display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 8px 32px;
+  padding: 28px 0; border-bottom: 1px solid var(--line);
+}
+.entry:last-child { border-bottom: 0; }
+.when { font: 400 0.8rem/1.6 var(--font-mono); color: var(--muted); padding-top: 5px; }
+.entry h3 { font: 700 1.3rem/1.25 var(--font-display); letter-spacing: -0.01em; margin: 0; }
+h3 + ul { margin-top: 14px; }
+.entry .sub { color: var(--muted); margin: 2px 0 14px; font-size: 0.95rem; }
+.entry ul { margin: 0; padding-left: 1.1em; display: flex; flex-direction: column; gap: 9px; max-width: 62ch; }
+.entry li::marker { color: var(--accent); }
+.entry p { margin: 0; max-width: 62ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; padding: 0; list-style: none; }
+.tags li { font: 400 0.76rem/1 var(--font-mono); border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 6px 9px; }
+
+.stack { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px 32px; margin: 0; padding-top: 20px; }
+.stack dt { font: 400 0.8rem/1.6 var(--font-mono); color: var(--muted); padding-top: 3px; }
+.stack dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.stack .chip { font: 400 0.82rem/1 var(--font-mono); border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 7px 10px; }
+
+footer { color: var(--muted); font: 400 0.78rem/1.6 var(--font-mono); border-top: 1px solid var(--line); padding-top: 20px; }
+
+@media (max-width: 860px) {
+  body { padding-block: 32px; }
+  .page { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  .id { position: static; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 16px 20px; align-items: start; }
+  .portrait { grid-row: 1 / span 2; aspect-ratio: 1; max-width: 112px; height: 112px; align-self: start; }
+  .id .status, .id .links, .id .cv { grid-column: 1 / -1; }
+  .id .name-block { align-self: center; }
+}
+@media (max-width: 560px) {
+  .entry, .stack { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .when { padding-top: 0; }
+  main { gap: 48px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .cv { transition: none; } }
+</style>
 </head>
+<body>
+<div class="page">
 
-<body class="is-preload">
-    <section id="header">
-        <header>
-            <span class="image avatar"><img src="images/avatar.jpeg" alt="" /></span>
-            <h1 id="logo"><a href="#">Diogo Gonçalves</a></h1>
-            <p>DevOps Engineer<br />
-                contact@diogog.com</p>
-        </header>
-        <nav id="nav">
-            <ul>
-                <li><a href="#one">Curriculum Vitae</a></li>
-            </ul>
-        </nav>
-        <footer>
-            <ul class="icons">
-                <li><a href="https://github.com/goncalves-diogo" class="icon brands fa-github"><span
-                            class="label">Github</span></a></li>
-            </ul>
-        </footer>
-    </section>
-    <div id="wrapper">
-        <div id="main">
-            <section id="one">
-                <div class="container">
-                    <header class="major">
-                        <h3>Curriculum Vitae</h3>
-                    </header>
-                    <div class="box alt">
-                        <div class="col-4"><span class="image fit"><img
-                                    src="https://raw.githubusercontent.com/goncalves-diogo/curriculum-vitae/main/resume-1.png"
-                                    alt="" /></span></div>
-                    </div>
-                    <ul class="actions">
-                        <div class="col-6">
-                            <li><a href="https://raw.githubusercontent.com/goncalves-diogo/curriculum-vitae/main/resume.pdf"
-                                    class="button primary icon solid fa-download">Download</a></li>
-                        </div>
-                    </ul>
-                </div>
-            </section>
-        </div>
+  <aside class="id">
+    <img class="portrait" src="images/avatar-560.jpg" width="560" height="700" alt="Portrait of Diogo Gonçalves">
+    <div class="name-block">
+      <h1>Diogo Gonçalves</h1>
+      <p class="role">DevOps Engineer</p>
     </div>
+    <div class="status"><span class="dot" aria-hidden="true"></span>Utrecht, NL · Channable</div>
+    <ul class="links">
+      <li><a id="email" href="mailto:contact@diogog.com">contact@diogog.com</a><button class="copy" type="button" data-copy="contact@diogog.com">Copy</button></li>
+      <li><a href="https://github.com/goncalves-diogo" rel="noopener">github.com/goncalves-diogo</a></li>
+      <li><a href="https://github.com/d-goncalves" rel="noopener">github.com/d-goncalves</a></li>
+    </ul>
+    <a class="cv" href="https://raw.githubusercontent.com/goncalves-diogo/curriculum-vitae/main/resume.pdf" rel="noopener">Download CV <span>PDF</span></a>
+  </aside>
 
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.scrollex.min.js"></script>
-    <script src="assets/js/jquery.scrolly.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
+  <main>
+    <p class="lede">I run the infrastructure behind software. Cloud on <em>GCP</em>, systems that rebuild the same way every time with <em>Nix</em>, and provisioning done in <em>Terraform</em> and <em>Ansible</em> so nothing depends on someone's memory.</p>
 
+    <section aria-labelledby="exp">
+      <h2 id="exp">Employment</h2>
+      <article class="entry">
+        <div class="when">Feb 2023 – now</div>
+        <div>
+          <h3>Channable</h3>
+          <p class="sub">DevOps Engineer · Utrecht, Netherlands</p>
+          <ul>
+            <li>Run infrastructure on GCP: virtual machines, Cloud SQL databases and Cloud Storage.</li>
+            <li>Keep systems reproducible with Nix, and automate provisioning and configuration with Terraform and Ansible, which cut manual errors and sped up changes.</li>
+            <li>Deployed custom Prometheus exporters and Grafana dashboards to track application performance and resource use.</li>
+            <li>Wrote the disaster recovery plan: backup and restore procedures, failover mechanisms and business continuity.</li>
+          </ul>
+        </div>
+      </article>
+      <article class="entry">
+        <div class="when">Oct 2020 – Nov 2022</div>
+        <div>
+          <h3>Bsolus</h3>
+          <p class="sub">Software Engineer · Braga, Portugal</p>
+          <ul>
+            <li>Architected a marketing automation platform on a microservice architecture, built with NestJS, MongoDB and Docker.</li>
+            <li>Built the CI/CD pipeline that creates a Docker image in Bitbucket and deploys it to GCP.</li>
+            <li>Created an abstraction layer for Jest that reduced developer workload and simplified integration tests.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="proj">
+      <h2 id="proj">Project</h2>
+      <article class="entry">
+        <div class="when">Ansible · GCP · Docker</div>
+        <div>
+          <h3>Zulip on Docker Swarm</h3>
+          <ul>
+            <li>Deployed Zulip on GCP with Docker Swarm and Ansible.</li>
+            <li>Set up system monitoring with the ELK stack.</li>
+            <li>Load tested the deployment with JMeter.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="stack">
+      <h2 id="stack">Toolbox</h2>
+      <dl class="stack">
+        <dt>Languages</dt>
+        <dd><span class="chip">Python</span><span class="chip">C++</span><span class="chip">C</span><span class="chip">TypeScript</span><span class="chip">Haskell</span><span class="chip">Nix</span><span class="chip">Bash</span></dd>
+        <dt>Observability</dt>
+        <dd><span class="chip">Prometheus</span><span class="chip">Grafana</span><span class="chip">Alert Manager</span></dd>
+        <dt>Infrastructure</dt>
+        <dd><span class="chip">Terraform</span><span class="chip">Ansible</span><span class="chip">Docker</span><span class="chip">PostgreSQL</span></dd>
+        <dt>Workflow</dt>
+        <dd><span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Agile</span><span class="chip">Jira</span><span class="chip">Postman</span><span class="chip">Confluence</span></dd>
+        <dt>Spoken</dt>
+        <dd><span class="chip">English (C2)</span><span class="chip">Portuguese (native)</span></dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="edu">
+      <h2 id="edu">Education</h2>
+      <article class="entry">
+        <div class="when">Oct 2016 – Apr 2022</div>
+        <div>
+          <h3>University of Minho</h3>
+          <p class="sub">Braga, Portugal</p>
+          <ul>
+            <li>Master's in Software Engineering, specialised in Computer Graphics and Parallel &amp; Distributed Computing.</li>
+            <li>Bachelor's in Software Engineering.</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section aria-labelledby="vol">
+      <h2 id="vol">Volunteering</h2>
+      <article class="entry">
+        <div class="when">2018 – 2019</div>
+        <div>
+          <h3>CoderDojo</h3>
+          <p class="sub">Mentor</p>
+          <p>A free, non-profit organisation that teaches basic programming and algorithmic skills to young people aged 7 to 17.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer>© Diogo Gonçalves</footer>
+  </main>
+</div>
+
+<script>
+document.querySelectorAll('[data-copy]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var text = btn.getAttribute('data-copy');
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { selectText(); });
+    } else { selectText(); }
+    function selectText() {
+      var a = document.getElementById('email'), r = document.createRange();
+      r.selectNodeContents(a); var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = 'Press ⌘/Ctrl+C'; setTimeout(function () { btn.textContent = 'Copy'; }, 2400);
+    }
+  });
+});
+</script>
 </body>
-
 </html>
