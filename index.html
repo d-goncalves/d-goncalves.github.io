@@ -1,65 +1,95 @@
-<!DOCTYPE HTML>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Diogo Gonçalves</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Diogo Gonçalves</title>
+<meta name="description" content="Diogo Gonçalves, DevOps engineer in Utrecht.">
+<link rel="icon" href="assets/favicon/favicon.ico">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+<style>
+/* A plain text page. One monospace font, one column, links underlined. */
+:root {
+  --bg: #fbfbf9;
+  --fg: #1c1c1a;
+  --dim: #77776f;
+  --link: #0b4fb3;
+  --rule: #d9d9d2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14150f; --fg: #d8d8cc; --dim: #8a8a7c; --link: #8ab4ff; --rule: #33342b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14150f; --fg: #d8d8cc; --dim: #8a8a7c; --link: #8ab4ff; --rule: #33342b;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.65 ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 76ch; margin: 0 auto; }
+a { color: var(--link); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+.top { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 28px; }
+h1 { font: inherit; font-weight: 700; font-size: 1.15em; margin: 0; }
+.top p { margin: 0; }
+.dim { color: var(--dim); }
+
+h2 { font: inherit; font-weight: 700; margin: 40px 0 10px; }
+h2::before { content: "## "; color: var(--dim); font-weight: 400; }
+p { margin: 0 0 12px; }
+ul { margin: 0 0 12px; padding: 0; list-style: none; }
+li { padding-left: 2ch; text-indent: -2ch; margin-bottom: 4px; }
+li::before { content: "- "; color: var(--dim); }
+.job { margin-bottom: 22px; }
+.job .head { font-weight: 700; margin: 0; }
+.job .meta { color: var(--dim); margin: 0 0 6px; }
+dl { margin: 0; display: grid; grid-template-columns: 14ch minmax(0, 1fr); gap: 2px 2ch; }
+dt { color: var(--dim); }
+dd { margin: 0; }
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px dashed var(--rule); color: var(--dim); }
+
+@media (max-width: 520px) {
+  body { font-size: 14px; padding-block: 24px 48px; }
+  dl { grid-template-columns: minmax(0, 1fr); }
+  dd { margin-bottom: 8px; }
+}
+</style>
 </head>
+<body>
+<div class="wrap">
 
-<body class="is-preload">
-    <section id="header">
-        <header>
-            <span class="image avatar"><img src="images/avatar.jpeg" alt="" /></span>
-            <h1 id="logo"><a href="#">Diogo Gonçalves</a></h1>
-            <p>DevOps Engineer<br />
-                contact@diogog.com</p>
-        </header>
-        <nav id="nav">
-            <ul>
-                <li><a href="#one">Curriculum Vitae</a></li>
-            </ul>
-        </nav>
-        <footer>
-            <ul class="icons">
-                <li><a href="https://github.com/goncalves-diogo" class="icon brands fa-github"><span
-                            class="label">Github</span></a></li>
-            </ul>
-        </footer>
-    </section>
-    <div id="wrapper">
-        <div id="main">
-            <section id="one">
-                <div class="container">
-                    <header class="major">
-                        <h3>Curriculum Vitae</h3>
-                    </header>
-                    <div class="box alt">
-                        <div class="col-4"><span class="image fit"><img
-                                    src="https://raw.githubusercontent.com/goncalves-diogo/curriculum-vitae/main/resume-1.png"
-                                    alt="" /></span></div>
-                    </div>
-                    <ul class="actions">
-                        <div class="col-6">
-                            <li><a href="https://raw.githubusercontent.com/goncalves-diogo/curriculum-vitae/main/resume.pdf"
-                                    class="button primary icon solid fa-download">Download</a></li>
-                        </div>
-                    </ul>
-                </div>
-            </section>
-        </div>
-    </div>
+<div class="top">
+  <div>
+    <h1>Diogo Gonçalves</h1>
+    <p>DevOps engineer, Porto, Portugal</p>
+    <p class="dim">
+      <a href="mailto:contact@diogog.com">contact@diogog.com</a><br>
+      <a href="https://github.com/goncalves-diogo" rel="noopener">github.com/goncalves-diogo</a><br>
+      <a href="https://github.com/d-goncalves" rel="noopener">github.com/d-goncalves</a><br>
+      <a href="https://linkedin.com/in/diogo-alexandre-gonçalves" rel="noopener">linkedin.com/in/diogo-alexandre-gonçalves</a>
+    </p>
+  </div>
+</div>
 
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.scrollex.min.js"></script>
-    <script src="assets/js/jquery.scrolly.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
+<p>I'm a DevOps and platform engineer at Euronext in Porto. Day to day that means AWS, Terraform, Kubernetes and the CI/CD around them, and helping development teams get releases into production.</p>
+<p>Before that I spent almost three years at Channable in Utrecht, running infrastructure on GCP with Nix, Terraform and Nomad. Before that I designed a microservice platform for my MSc thesis at the University of Minho.</p>
+<p>At home I run a Kubernetes homelab on Talos Linux, managed with FluxCD, across amd64 and Raspberry Pi nodes. It hosts Gitea, Grafana, Jellyfin, Immich and Uptime Kuma.</p>
+<p>The details are in my <a href="cv.pdf">CV (PDF)</a>.</p>
 
+<footer>diogog.com</footer>
+</div>
 </body>
-
 </html>
