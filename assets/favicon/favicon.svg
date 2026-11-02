@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Cactus">
+  <g fill="none" stroke="#3a9456" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 13V52" stroke-width="15"/>
+    <path d="M32 40H16V25" stroke-width="9"/>
+    <path d="M32 31H48V19" stroke-width="9"/>
+  </g>
+  <path d="M32 11V53" fill="none" stroke="#2c7a43" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>
+  <path d="M10 58.5H54" fill="none" stroke="#b08a5b" stroke-width="3" stroke-linecap="round"/>
+</svg>
