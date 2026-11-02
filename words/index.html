@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Letter Alchemy</title>
+<meta name="description" content="Find the words hiding in a set of letters. Portuguese and English. Runs in your browser.">
+<link rel="icon" href="../assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon/favicon.ico" sizes="48x48">
+<style>
+:root {
+  --bg: #fbfbf9;
+  --fg: #1c1c1a;
+  --dim: #77776f;
+  --link: #0b4fb3;
+  --rule: #d9d9d2;
+  --chip: #eeeee8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14150f; --fg: #d8d8cc; --dim: #8a8a7c; --link: #8ab4ff; --rule: #33342b; --chip: #22231b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14150f; --fg: #d8d8cc; --dim: #8a8a7c; --link: #8ab4ff; --rule: #33342b; --chip: #22231b;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.65 ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 76ch; margin: 0 auto; }
+a { color: var(--link); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.dim { color: var(--dim); }
+
+h1 { font: inherit; font-weight: 700; font-size: 1.15em; margin: 0 0 4px; }
+p { margin: 0 0 12px; }
+
+form { display: flex; flex-direction: column; gap: 14px; margin: 22px 0 6px; }
+.search { display: flex; gap: 10px; }
+input[type="text"] {
+  flex: 1 1 auto; min-width: 0;
+  font: inherit; font-size: 1.25em; letter-spacing: .12em;
+  padding: 8px 10px; color: var(--fg); background: transparent;
+  border: 1px solid var(--rule); border-radius: 4px;
+}
+button {
+  font: inherit; color: var(--fg); background: transparent;
+  border: 1px solid var(--rule); border-radius: 4px;
+  padding: 8px 12px; cursor: pointer;
+}
+button:not(.lk):hover { border-color: var(--link); }
+.langs { margin: 4px 0 0; }
+button.lk {
+  font: inherit; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--link); text-decoration: underline; text-underline-offset: 3px;
+}
+button.lk[aria-pressed="true"] { color: var(--fg); font-weight: 700; text-decoration: none; cursor: default; }
+
+#results h2 { font: inherit; font-weight: 700; margin: 28px 0 8px; }
+#results h2::before { content: "## "; color: var(--dim); font-weight: 400; }
+#results h2 span { color: var(--dim); font-weight: 400; }
+.words { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+.words li { background: var(--chip); border-radius: 3px; padding: 0 7px; }
+
+footer { margin-top: 48px; padding-top: 14px; border-top: 1px dashed var(--rule); color: var(--dim); font-size: .9em; }
+footer p { margin-bottom: 8px; }
+
+@media (max-width: 520px) { body { font-size: 14px; padding-block: 24px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Letter Alchemy</h1>
+
+<form id="form" autocomplete="off">
+  <div class="search">
+    <input type="text" id="letters" name="letters" maxlength="24" inputmode="text" aria-label="Your letters"
+           autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="e.g. ooclutó" autofocus>
+    <button type="submit">Go</button>
+  </div>
+</form>
+<p class="dim langs" role="group" aria-label="Language"><button type="button" class="lk" data-lang="pt" aria-pressed="true">Português</button> · <button type="button" class="lk" data-lang="en" aria-pressed="false">English</button></p>
+<div id="status" class="dim" role="status" aria-live="polite"></div>
+<div id="results"></div>
+
+<footer>
+  <p>Everything runs in your browser; nothing you type is sent anywhere.</p>
+  <p>Word lists: Portuguese from
+    <a href="https://github.com/jfoclpf/words-pt" rel="noopener">words-pt</a> (GPL-3.0), based on the
+    <a href="https://natura.di.uminho.pt/download/sources/Dictionaries/wordlists/" rel="noopener">University of Minho</a>
+    dictionary; English from the ENABLE word list. Not affiliated with any game.</p>
+  <p><a href="../">&larr; diogog.com</a></p>
+</footer>
+</div>
+
+<script>
+"use strict";
+const MIN = 3, MAX = 12;
+const cache = new Map();
+
+const $ = (id) => document.getElementById(id);
+const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+let current = (navigator.language || "").toLowerCase().startsWith("pt") ? "pt" : "en";
+const lang = () => current;
+function setLang(l) {
+  current = l;
+  document.querySelectorAll("button.lk").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
+  document.documentElement.lang = l;
+}
+
+async function load(l, n) {
+  const key = l + n;
+  if (!cache.has(key)) {
+    cache.set(key, fetch(`data/${l}-${n}.txt`).then((r) => {
+      if (!r.ok) throw new Error(r.status);
+      return r.text();
+    }).then((t) => t.split("\n").filter(Boolean).map((w) => [w, norm(w)])));
+  }
+  return cache.get(key);
+}
+
+function count(s) {
+  const c = new Array(26).fill(0);
+  for (let i = 0; i < s.length; i++) c[s.charCodeAt(i) - 97]++;
+  return c;
+}
+
+function fits(word, have) {
+  const left = have.slice();
+  for (let i = 0; i < word.length; i++) {
+    if (--left[word.charCodeAt(i) - 97] < 0) return false;
+  }
+  return true;
+}
+
+async function solve() {
+  const raw = $("letters").value;
+  const letters = norm(raw).replace(/[^a-z]/g, "");
+  const out = $("results"), status = $("status");
+  out.textContent = "";
+  if (letters.length < MIN) { status.textContent = `Type at least ${MIN} letters.`; return; }
+  if (letters.length > MAX) { status.textContent = `That's ${letters.length} letters. Up to ${MAX}, please.`; return; }
+
+  const l = lang(), have = count(letters);
+  history.replaceState(null, "", `?l=${encodeURIComponent(raw.trim())}&lang=${l}`);
+  status.textContent = "Mixing...";
+  let total = 0;
+  try {
+    for (let n = letters.length; n >= MIN; n--) {
+      const hits = (await load(l, n)).filter(([, k]) => fits(k, have)).map(([w]) => w);
+      if (!hits.length) continue;
+      total += hits.length;
+      const h = document.createElement("h2");
+      h.append(`${n} letters `);
+      const c = document.createElement("span"); c.textContent = `(${hits.length})`; h.append(c);
+      const ul = document.createElement("ul"); ul.className = "words";
+      for (const w of hits) { const li = document.createElement("li"); li.textContent = w; ul.append(li); }
+      out.append(h, ul);
+    }
+    status.textContent = total ? `${total} words from "${letters}".` : `Nothing from "${letters}". Even alchemists have off days.`;
+  } catch (e) {
+    status.textContent = "Couldn't load the word list. Try again in a moment.";
+  }
+}
+
+$("form").addEventListener("submit", (e) => { e.preventDefault(); solve(); });
+document.querySelectorAll("button.lk").forEach((b) => b.addEventListener("click", () => { setLang(b.dataset.lang); if ($("letters").value) solve(); }));
+
+const q = new URLSearchParams(location.search);
+setLang(q.get("lang") === "pt" || q.get("lang") === "en" ? q.get("lang") : current);
+if (q.get("l")) { $("letters").value = q.get("l").slice(0, 24); solve(); }
+</script>
+</body>
+</html>
