@@ -1,3 +1,3 @@
-## Personal website
+# diogog.com
 
-Just host a simple html file to display my CV and personal information
+My personal website: a single plain HTML page (`index.html`)
